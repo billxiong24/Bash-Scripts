@@ -1,16 +1,7 @@
  #!/bin/bash
- FOLDER=
- PASSWORD= #put password here
- tag="title"
- if [ -z "$FOLDER" -o $# -eq 0 ]; then
-	#No argument supplied, or invalid
-	FOLDER="Inbox"
- else
-	FOLDER=$1
- fi
- 
+ # arg1 is email, arg2 is password- put in this file you want to 
  #Need to provide authentication
- wget -q -O /home/billxiong24/Utility_Scripts/gmail.xml --user="billx0477@gmail.com" --password="$PASSWORD" https://mail.google.com/mail/feed/atom/$FOLDER
+ wget -q -O gmail.xml --user="$1" --password="$2" https://mail.google.com/mail/feed/atom/
  #grep -o '<title>.*</title>' gmail.xml
 
  #get sender
@@ -25,5 +16,14 @@
  sed -i 's/&quot;/\"/g' updated_email.txt 
  sed -i "s/&#39;/'/g" updated_email.txt
  
- #These were temporary files
- rm senders.txt subjects.txt
+ type=
+ [[ $# -eq 0 ]] || type=$1;
+ if [ "$type" == "subject" ]; then
+    cat subjects.txt
+ elif [ "$type" == "sender" ]; then
+    cat senders.txt;
+ else
+    cat updated_email.txt
+ fi
+ # temporary files
+ rm subjects.txt senders.txt updated_email.txt gmail.xml
